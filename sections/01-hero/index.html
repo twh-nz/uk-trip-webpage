@@ -569,21 +569,51 @@ section.journal-spread:nth-of-type(3n)::before{
 <script>function sendHeight(){parent.postMessage({type:'rangahaua-height',height:Math.max(document.body.scrollHeight,document.documentElement.scrollHeight)},'*')}addEventListener('load',sendHeight);addEventListener('resize',sendHeight);new ResizeObserver(sendHeight).observe(document.body);</script>
 <script>
 (function () {
-  function sendRangahauaHeight() {
-    const height = Math.max(
-      document.body.scrollHeight,
-      document.body.offsetHeight,
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
+  let lastSentHeight = 0;
+  let resizeTimer = null;
 
-    window.parent.postMessage(
-      {
-        type: "rangahaua-height",
-        height: height
-      },
-      "*"
-    );
+  function getContentHeight() {
+    const children = Array.from(document.body.children).filter(function (element) {
+      return element.tagName !== "SCRIPT";
+    });
+
+    if (!children.length) return 0;
+
+    let greatestBottom = 0;
+
+    children.forEach(function (element) {
+      const rect = element.getBoundingClientRect();
+      const bottom = rect.bottom + window.scrollY;
+
+      if (bottom > greatestBottom) {
+        greatestBottom = bottom;
+      }
+    });
+
+    return Math.ceil(greatestBottom);
+  }
+
+  function sendRangahauaHeight() {
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(function () {
+      const height = getContentHeight();
+
+      if (
+        height > 0 &&
+        Math.abs(height - lastSentHeight) > 3
+      ) {
+        lastSentHeight = height;
+
+        window.parent.postMessage(
+          {
+            type: "rangahaua-height",
+            height: height
+          },
+          "*"
+        );
+      }
+    }, 100);
   }
 
   window.addEventListener("load", sendRangahauaHeight);
@@ -593,10 +623,14 @@ section.journal-spread:nth-of-type(3n)::before{
     element.addEventListener("load", sendRangahauaHeight);
   });
 
-  if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(sendRangahauaHeight);
-    observer.observe(document.documentElement);
-    observer.observe(document.body);
+  if ("MutationObserver" in window) {
+    const mutationObserver = new MutationObserver(sendRangahauaHeight);
+
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
   }
 
   setTimeout(sendRangahauaHeight, 300);
