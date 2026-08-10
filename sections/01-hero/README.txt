@@ -53,3 +53,19 @@ V8 CHANGES
 - “genuinely learn from one another.” retained in gold and set in italics.
 - About Us collage expanded from four to six equal-size photos.
 - All white space removed between collage rows and columns.
+
+
+V9 CHANGES
+- Handwritten font changed from Caveat to Kalam.
+- Section 1 introductory copy rewritten.
+- Added animated "Our main intentions" section; one of three cards highlights every six seconds.
+- Removed faint right-side section labels.
+- Manifesto statement enlarged 50% from V8 and mobile background positioning retains the carved pou.
+- Updated "A different way of seeing organisations" framing copy.
+- Rewritten Indigenous knowledge subtitle, observation note, Whare Tupuna title and description.
+- Rebuilt Questions section with new subheading and six questions.
+- Updated Te Whare Hukahuka service list, field note and 12-year evidence statement.
+- Updated Shay and Shaquille introductions and expertise areas.
+- Updated audience and collaboration tiles.
+- Updated journey caption, dates and country movements.
+- Replaced the ResizeObserver iframe-height logic with stable content-boundary measurement to prevent infinite page growth.
